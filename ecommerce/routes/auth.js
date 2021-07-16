@@ -4,7 +4,7 @@ const {
   signin,
   signout,
   requireSignin
-} = require('../controllers/user');
+} = require('../controllers/auth');
 const { userSignupValidator } = require('../validator');
 
 const router = express.Router();
