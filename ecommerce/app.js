@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const expressValidator = require('express-validator');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 //routes middleware
+app.use(expressValidator());
 app.use('/api', userRoutes);
 
 const port = process.env.PORT || 3000;
