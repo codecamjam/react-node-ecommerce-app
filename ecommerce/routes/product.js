@@ -10,7 +10,8 @@ const {
   list,
   listRelated,
   listCategories,
-  listBySearch
+  listBySearch,
+  photo
 } = require('../controllers/product');
 
 const router = express.Router();
@@ -44,8 +45,8 @@ router.put(
 router.get('/products', list);
 router.get('/products/related/:productId', listRelated);
 router.get('/products/categories', listCategories);
-// route - make sure its post
 router.post('/products/by/search', listBySearch);
+router.get('/product/photo/:productId', photo);
 
 router.param('userId', userById);
 router.param('productId', productById);
