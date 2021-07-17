@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const expressValidator = require('express-validator');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 require('dotenv').config();
 
 //import routes
@@ -28,15 +29,16 @@ mongoose
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());
+app.use(expressValidator());
+app.use(cors());
 
 //routes middleware
-app.use(expressValidator());
 app.use('/api', authRoutes);
 app.use('/api', userRoutes);
 app.use('/api', categoryRoutes);
 app.use('/api', productRoutes);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
