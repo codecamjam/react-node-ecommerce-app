@@ -9,7 +9,8 @@ const {
   update,
   list,
   listRelated,
-  listCategories
+  listCategories,
+  listBySearch
 } = require('../controllers/product');
 
 const router = express.Router();
@@ -43,6 +44,8 @@ router.put(
 router.get('/products', list);
 router.get('/products/related/:productId', listRelated);
 router.get('/products/categories', listCategories);
+// route - make sure its post
+router.post('/products/by/search', listBySearch);
 
 router.param('userId', userById);
 router.param('productId', productById);
