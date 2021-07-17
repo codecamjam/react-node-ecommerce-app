@@ -7,7 +7,8 @@ const {
   read,
   remove,
   update,
-  list
+  list,
+  listRelated
 } = require('../controllers/product');
 
 const router = express.Router();
@@ -39,6 +40,7 @@ router.put(
 );
 
 router.get('/products', list);
+router.get('/products/related/:productId', listRelated);
 
 router.param('userId', userById);
 router.param('productId', productById);
