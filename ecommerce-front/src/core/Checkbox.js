@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 const Checkbox = ({ categories, handleFilters }) => {
   const [checked, setChecked] = useState([]);

@@ -1,14 +1,16 @@
 import Layout from './Layout';
-import { getProducts } from './apiCore';
 import { useState, useEffect } from 'react';
-import Card from './Card';
 import Checkbox from './Checkbox';
 import { getCategories } from './apiCore';
 
 import React from 'react';
 
 const Shop = () => {
+  const [myFilters, setMyFilters] = useState({
+    filters: { category: [], price: [] },
+  });
   const [categories, setCategories] = useState([]);
+  /*eslint-disable */
   const [error, setError] = useState([]);
 
   // load categories and set form data
@@ -27,7 +29,10 @@ const Shop = () => {
   }, []);
 
   const handleFilters = (filters, filterBy) => {
-    console.log('SHOP', filters, filterBy);
+    // console.log('SHOP', filters, filterBy);
+    const newFilters = { ...myFilters };
+    newFilters.filters[filterBy] = filters;
+    setMyFilters(newFilters);
   };
 
   return (
@@ -48,7 +53,7 @@ const Shop = () => {
             />
           </ul>
         </div>
-        <div className="col-8">Right</div>
+        <div className="col-8">{JSON.stringify(myFilters)}</div>
       </div>
     </Layout>
   );
