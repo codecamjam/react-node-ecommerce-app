@@ -1,7 +1,9 @@
 import Layout from './Layout';
 import { useState, useEffect } from 'react';
 import Checkbox from './Checkbox';
-import { getCategories } from './fixedPrices';
+import Radiobox from './Radiobox';
+import { getCategories } from './apiCore';
+import { prices } from './fixedPrices';
 
 import React from 'react';
 
@@ -50,6 +52,14 @@ const Shop = () => {
               handleFilters={(filters) =>
                 handleFilters(filters, 'category')
               }
+            />
+          </ul>
+
+          <h4>Filter by price range</h4>
+          <ul>
+            <Radiobox
+              prices={prices}
+              handleFilters={(filters) => handleFilters(filters, 'price')}
             />
           </ul>
         </div>
