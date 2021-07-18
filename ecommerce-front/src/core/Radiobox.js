@@ -1,9 +1,12 @@
 import { useState } from 'react';
 
-const Radiobox = ({ prices }) => {
-  const [value, setValues] = useState(0);
+const Radiobox = ({ prices, handleFilters }) => {
+  const [value, setValue] = useState(0);
 
-  const handleChange = () => {};
+  const handleChange = (e) => {
+    handleFilters(e.target.value);
+    setValue(e.target.value);
+  };
 
   return prices.map((p, i) => (
     <div key={i}>
@@ -11,6 +14,7 @@ const Radiobox = ({ prices }) => {
         onChange={handleChange}
         value={`${p._id}`}
         type="radio"
+        name={p}
         className="form-check-input"
       />
       <label htmlFor="" className="form-check-label">
