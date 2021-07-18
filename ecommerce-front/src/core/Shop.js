@@ -2,7 +2,7 @@ import Layout from './Layout';
 import { useState, useEffect } from 'react';
 import Checkbox from './Checkbox';
 import Radiobox from './Radiobox';
-import { getCategories } from './apiCore';
+import { getCategories, getFilteredProducts } from './apiCore';
 import { prices } from './fixedPrices';
 
 import React from 'react';
@@ -12,8 +12,10 @@ const Shop = () => {
     filters: { category: [], price: [] },
   });
   const [categories, setCategories] = useState([]);
-  /*eslint-disable */
-  const [error, setError] = useState([]);
+  const [limit, setLimit] = useState(6);
+  const [skip, setSkip] = useState(0);
+  const [filteredResults, setFilteredResults] = useState(0);
+  const [, setError] = useState([]);
 
   // load categories and set form data
   const init = () => {
@@ -28,7 +30,20 @@ const Shop = () => {
 
   useEffect(() => {
     init();
+    loadFilteredResults(skip, limit, myFilters.filters);
+    /*eslint-disable */
   }, []);
+
+  const loadFilteredResults = (newFilters) => {
+    // console.log(newFilters);
+    getFilteredProducts(skip, limit, newFilters).then((data) => {
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setFilteredResults(data);
+      }
+    });
+  };
 
   const handleFilters = (filters, filterBy) => {
     // console.log('SHOP', filters, filterBy);
@@ -40,6 +55,7 @@ const Shop = () => {
       newFilters.filters[filterBy] = priceValues;
     }
 
+    loadFilteredResults(myFilters.filters);
     setMyFilters(newFilters);
   };
 
@@ -81,7 +97,7 @@ const Shop = () => {
             />
           </ul>
         </div>
-        <div className="col-8">{JSON.stringify(myFilters)}</div>
+        <div className="col-8">{JSON.stringify(filteredResults)}</div>
       </div>
     </Layout>
   );
