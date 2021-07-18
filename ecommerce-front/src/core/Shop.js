@@ -1,7 +1,7 @@
 import Layout from './Layout';
 import { useState, useEffect } from 'react';
 import Checkbox from './Checkbox';
-import { getCategories } from './apiCore';
+import { getCategories } from './fixedPrices';
 
 import React from 'react';
 
