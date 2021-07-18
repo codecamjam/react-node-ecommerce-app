@@ -43,7 +43,7 @@ const AddCategory = () => {
           className="form-control"
           onChange={handleChange}
           value={name}
-          autofocus
+          autoFocus
           required
         />
       </div>
@@ -74,6 +74,7 @@ const AddCategory = () => {
     <Layout
       title="Add a new category"
       description={`G'day ${user.name}, ready to add a new category?`}
+      className="container-fluid"
     >
       <div className="row">
         <div className="col-md-8 offset-md-2">
