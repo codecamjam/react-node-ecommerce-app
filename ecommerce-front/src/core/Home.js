@@ -42,16 +42,16 @@ const Home = () => {
       className="container-fluid"
     >
       <Search />
-      <h2 className="mb-4">Best Sellers</h2>
+      <h2 className="mb-4">New Arrivals</h2>
       <div className="row">
-        {productsBySell.map((product, i) => (
+        {productsByArrival.map((product, i) => (
           <Card key={i} product={product} />
         ))}
       </div>
 
-      <h2 className="mb-4">New Arrivals</h2>
+      <h2 className="mb-4">Best Sellers</h2>
       <div className="row">
-        {productsByArrival.map((product, i) => (
+        {productsBySell.map((product, i) => (
           <Card key={i} product={product} />
         ))}
       </div>
