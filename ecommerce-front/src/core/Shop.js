@@ -13,7 +13,7 @@ const Shop = () => {
     filters: { category: [], price: [] },
   });
   const [categories, setCategories] = useState([]);
-  const [limit, setLimit] = useState(6);
+  const [limit] = useState(6);
   const [skip, setSkip] = useState(0);
   const [size, setSize] = useState(0);
   const [filteredResults, setFilteredResults] = useState([]);
