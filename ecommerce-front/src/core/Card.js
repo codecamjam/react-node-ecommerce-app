@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import ShowImage from './ShowImage';
 import moment from 'moment';
-import { addItem, updateItem } from './cartHelpers';
+import { addItem, removeItem, updateItem } from './cartHelpers';
 
 const Card = ({
   product,
   showViewProductButton = true,
   showAddToCartButton = true,
   cartUpdate = false,
+  showRemoveProductButton = false,
 }) => {
   const [redirect, setRedirect] = useState(false);
   const [count, setCount] = useState(product.count);
@@ -44,6 +45,19 @@ const Card = ({
           className="btn btn-outline-warning my-2"
         >
           Add to cart
+        </button>
+      )
+    );
+  };
+
+  const showRemoveButton = (showRemoveProductButton) => {
+    return (
+      showRemoveProductButton && (
+        <button
+          onClick={() => removeItem(product._id)}
+          className="btn btn-outline-danger my-2"
+        >
+          Remove Product
         </button>
       )
     );
@@ -105,6 +119,7 @@ const Card = ({
         <br />
         {showViewButton(showViewProductButton)}
         {showAddToCart(showAddToCartButton)}
+        {showRemoveButton(showViewProductButton)}
         {showCartUpdateOptions(cartUpdate)}
       </div>
     </div>
