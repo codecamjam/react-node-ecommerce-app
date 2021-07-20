@@ -33,7 +33,7 @@ const Card = ({ product, showViewProductButton = true }) => {
 
   const showAddToCartButton = () => (
     <button onClick={addToCart} className="btn btn-outline-warning my-2">
-      Add to card
+      Add to cart
     </button>
   );
 
