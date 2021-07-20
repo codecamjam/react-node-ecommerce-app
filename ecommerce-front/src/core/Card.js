@@ -1,9 +1,12 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, Redirect } from 'react-router-dom';
 import ShowImage from './ShowImage';
 import moment from 'moment';
+import { addItem } from './cartHelpers';
 
 const Card = ({ product, showViewProductButton = true }) => {
+  const [redirect, setRedirect] = useState(false);
+
   const showViewButton = (showViewProductButton) => {
     return (
       showViewProductButton && (
@@ -16,8 +19,22 @@ const Card = ({ product, showViewProductButton = true }) => {
     );
   };
 
-  const showAddToCardButton = () => (
-    <button className="btn btn-outline-warning my-2">Add to card</button>
+  const addToCart = () => {
+    addItem(product, () => {
+      setRedirect(true);
+    });
+  };
+
+  const shouldRedirect = (redirect) => {
+    if (redirect) {
+      return <Redirect to="/cart" />;
+    }
+  };
+
+  const showAddToCartButton = () => (
+    <button onClick={addToCart} className="btn btn-outline-warning my-2">
+      Add to card
+    </button>
   );
 
   const showStock = (quantity) => {
@@ -32,6 +49,7 @@ const Card = ({ product, showViewProductButton = true }) => {
     <div className="card">
       <div className="card-header name">{product.name}</div>
       <div className="card-body">
+        {shouldRedirect(redirect)}
         <ShowImage item={product} url="product" />
         <p className="lead mt-2">
           {product.description.substring(0, 100)}
@@ -48,7 +66,7 @@ const Card = ({ product, showViewProductButton = true }) => {
         <br />
 
         {showViewButton(showViewProductButton)}
-        {showAddToCardButton()}
+        {showAddToCartButton()}
       </div>
     </div>
   );
