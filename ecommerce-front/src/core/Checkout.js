@@ -3,9 +3,11 @@ import { isAuthenticated } from '../auth';
 import { getBraintreeClientToken, processPayment } from './apiCore';
 import { useState, useEffect } from 'react';
 import DropIn from 'braintree-web-drop-in-react';
+import { emptyCart } from './cartHelpers';
 
 const Checkout = ({ products }) => {
   const [data, setData] = useState({
+    loading: false,
     success: false,
     clientToken: null,
     error: '',
@@ -51,6 +53,8 @@ const Checkout = ({ products }) => {
   };
 
   const buy = () => {
+    setData({ loading: true });
+
     //send the nonce to your server
     //nonce = data.instance.requestPaymentMethod()
 
@@ -77,10 +81,17 @@ const Checkout = ({ products }) => {
           .then((response) => {
             // console.log(response)
             setData({ ...data, success: response.success });
+            emptyCart(() => {
+              console.log('payment success and empty cart');
+              setData({ loading: false });
+            });
             //empty cart
             //create order
           })
-          .catch((error) => console.log(error));
+          .catch((error) => {
+            console.log(error);
+            setData({ loading: false });
+          });
       })
       .catch((error) => {
         // console.log('dropin error', error);
@@ -95,6 +106,9 @@ const Checkout = ({ products }) => {
           <DropIn
             options={{
               authorization: data.clientToken,
+              paypal: {
+                flow: 'vault',
+              },
             }}
             onInstance={(instance) => (data.instance = instance)}
           />
@@ -124,9 +138,12 @@ const Checkout = ({ products }) => {
     </div>
   );
 
+  const showLoading = (loading) => loading && <h2>Loading...</h2>;
+
   return (
     <div>
       <h2>Total: ${getTotal()}</h2>
+      {showLoading(data.loading)}
       {showSuccess(data.success)}
       {showError(data.error)}
       {showCheckout()}
