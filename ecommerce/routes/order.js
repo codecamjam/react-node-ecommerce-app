@@ -4,7 +4,9 @@ const { userById, addOrderToUserHistory } = require('../controllers/user');
 const {
   create,
   listOrders,
-  getStatusValues
+  getStatusValues,
+  updateOrderStatus,
+  orderById
 } = require('../controllers/order');
 const { decreaseQuantity } = require('../controllers/product');
 
@@ -35,6 +37,15 @@ router.get(
   getStatusValues
 );
 
+router.put(
+  '/order/:orderId/status/:userId',
+  requireSignin,
+  isAuth,
+  isAdmin,
+  updateOrderStatus
+);
+
 router.param('userId', userById);
+router.param('orderId', orderById);
 
 module.exports = router;
