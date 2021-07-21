@@ -1,6 +1,10 @@
 import { Link } from 'react-router-dom';
 import { isAuthenticated } from '../auth';
-import { getBraintreeClientToken, processPayment } from './apiCore';
+import {
+  getBraintreeClientToken,
+  processPayment,
+  createOrder,
+} from './apiCore';
 import { useState, useEffect } from 'react';
 import DropIn from 'braintree-web-drop-in-react';
 import { emptyCart } from './cartHelpers';
@@ -13,6 +17,7 @@ const Checkout = ({ products }) => {
     error: '',
     instance: {},
     functionaddress: '',
+    address: '',
   });
 
   const userId = isAuthenticated() && isAuthenticated().user._id;
@@ -35,6 +40,10 @@ const Checkout = ({ products }) => {
   useEffect(() => {
     getToken(userId, token);
   }, [userId, token]);
+
+  const handleAddress = (e) => {
+    setData({ ...data, address: e.target.value });
+  };
 
   const getTotal = () => {
     return products.reduce((currentValue, nextValue) => {
@@ -79,14 +88,25 @@ const Checkout = ({ products }) => {
 
         processPayment(userId, token, paymentData)
           .then((response) => {
-            // console.log(response)
+            console.log(response);
+
+            //empty cart
+            //create order
+
+            const createOrderData = {
+              products,
+              transaction_id: response.transaction_id,
+              amount: response.transaction.amount,
+              address: data.address,
+            };
+
+            createOrder(userId, token, createOrderData);
+
             setData({ ...data, success: response.success });
             emptyCart(() => {
               console.log('payment success and empty cart');
               setData({ loading: false });
             });
-            //empty cart
-            //create order
           })
           .catch((error) => {
             console.log(error);
@@ -103,6 +123,18 @@ const Checkout = ({ products }) => {
     <div onBlur={() => setData({ ...data, error: '' })}>
       {data.clientToken !== null && products.length > 0 ? (
         <div>
+          <div className="form-group mb-3">
+            <label htmlFor="" className="text-muted">
+              Delivery Address:
+            </label>
+            <textarea
+              onChange={handleAddress}
+              className="form-control"
+              value={data.address}
+              placeholder="Type your delivery address here..."
+            ></textarea>
+          </div>
+
           <DropIn
             options={{
               authorization: data.clientToken,
