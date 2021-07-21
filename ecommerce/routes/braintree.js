@@ -1,7 +1,10 @@
 const express = require('express');
 const { requireSignin, isAuth } = require('../controllers/auth');
 const { userById } = require('../controllers/user');
-const { generateToken } = require('../controllers/braintree');
+const {
+  generateToken,
+  processPayment
+} = require('../controllers/braintree');
 
 const router = express.Router();
 
@@ -10,6 +13,13 @@ router.get(
   requireSignin,
   isAuth,
   generateToken
+);
+
+router.get(
+  '/braintree/payment/:userId',
+  requireSignin,
+  isAuth,
+  processPayment
 );
 
 router.param('userId', userById);
