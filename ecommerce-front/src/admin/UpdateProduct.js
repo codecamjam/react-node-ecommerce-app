@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../core/Layout';
 import { isAuthenticated } from '../auth';
-import { createProduct, getCategories } from './apiAdmin';
+import { Redirect } from 'react-router-dom';
+import { getProduct, getCategories, updateProduct } from './apiAdmin';
 
-const AddProduct = () => {
+const UpdateProduct = ({ match }) => {
   const [values, setValues] = useState({
     name: '',
     description: '',
@@ -14,42 +15,61 @@ const AddProduct = () => {
     quantity: '',
     photo: '',
     loading: false,
-    error: '',
+    error: false,
     createdProduct: '',
     redirectToProfile: false,
     formData: '',
   });
+  const [categories, setCategories] = useState([]);
 
   const { user, token } = isAuthenticated();
   const {
     name,
     description,
     price,
-    categories,
     quantity,
     loading,
     error,
     createdProduct,
+    redirectToProfile,
     formData,
   } = values;
 
+  const init = (productId) => {
+    getProduct(productId).then((data) => {
+      if (data.error) {
+        setValues({ ...values, error: data.error });
+      } else {
+        // populate the state
+        setValues({
+          ...values,
+          name: data.name,
+          description: data.description,
+          price: data.price,
+          category: data.category._id,
+          shipping: data.shipping,
+          quantity: data.quantity,
+          formData: new FormData(),
+        });
+        // load categories
+        initCategories();
+      }
+    });
+  };
+
   // load categories and set form data
-  const init = () => {
+  const initCategories = () => {
     getCategories().then((data) => {
       if (data.error) {
         setValues({ ...values, error: data.error });
       } else {
-        setValues({
-          ...values,
-          categories: data,
-          formData: new FormData(),
-        });
+        setCategories(data);
       }
     });
   };
 
   useEffect(() => {
-    init();
+    init(match.params.productId);
     /*eslint-disable */
   }, []);
 
@@ -64,22 +84,26 @@ const AddProduct = () => {
     event.preventDefault();
     setValues({ ...values, error: '', loading: true });
 
-    createProduct(user._id, token, formData).then((data) => {
-      if (data.error) {
-        setValues({ ...values, error: data.error });
-      } else {
-        setValues({
-          ...values,
-          name: '',
-          description: '',
-          photo: '',
-          price: '',
-          quantity: '',
-          loading: false,
-          createdProduct: data.name,
-        });
+    updateProduct(match.params.productId, user._id, token, formData).then(
+      (data) => {
+        if (data.error) {
+          setValues({ ...values, error: data.error });
+        } else {
+          setValues({
+            ...values,
+            name: '',
+            description: '',
+            photo: '',
+            price: '',
+            quantity: '',
+            loading: false,
+            error: false,
+            redirectToProfile: true,
+            createdProduct: data.name,
+          });
+        }
       }
-    });
+    );
   };
 
   const newPostForm = () => (
@@ -163,7 +187,7 @@ const AddProduct = () => {
         />
       </div>
 
-      <button className="btn btn-outline-primary">Create Product</button>
+      <button className="btn btn-outline-primary">Update Product</button>
     </form>
   );
 
@@ -181,7 +205,7 @@ const AddProduct = () => {
       className="alert alert-info"
       style={{ display: createdProduct ? '' : 'none' }}
     >
-      <h2>{`${createdProduct}`} is created!</h2>
+      <h2>{`${createdProduct}`} is updated!</h2>
     </div>
   );
 
@@ -192,11 +216,18 @@ const AddProduct = () => {
       </div>
     );
 
+  const redirectUser = () => {
+    if (redirectToProfile) {
+      if (!error) {
+        return <Redirect to="/" />;
+      }
+    }
+  };
+
   return (
     <Layout
       title="Add a new product"
       description={`G'day ${user.name}, ready to add a new product?`}
-      className="container-fluid"
     >
       <div className="row">
         <div className="col-md-8 offset-md-2">
@@ -204,10 +235,11 @@ const AddProduct = () => {
           {showSuccess()}
           {showError()}
           {newPostForm()}
+          {redirectUser()}
         </div>
       </div>
     </Layout>
   );
 };
 
-export default AddProduct;
+export default UpdateProduct;
